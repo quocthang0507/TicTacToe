@@ -1,5 +1,5 @@
 ﻿
-namespace TicTacToe
+namespace TicTacToe.GUI
 {
 	partial class MainForm
 	{
