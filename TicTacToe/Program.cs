@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace TicTacToe
 {
 	/// <summary>
-	/// https://github.com/microsoftarchive/msdn-code-gallery-community-s-z/tree/master/Tic%20Tac%20Toe%20Game%20in%20C%23
+	/// https://hoangphongdhhp.blogspot.com/2016/07/game-co-caro-viet-bang-c.html
 	/// </summary>
 	static class Program
 	{
