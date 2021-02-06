@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace TicTacToe
 {
+	/// <summary>
+	/// https://github.com/microsoftarchive/msdn-code-gallery-community-s-z/tree/master/Tic%20Tac%20Toe%20Game%20in%20C%23
+	/// </summary>
 	static class Program
 	{
 		/// <summary>
