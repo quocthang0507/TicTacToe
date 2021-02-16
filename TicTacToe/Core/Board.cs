@@ -22,6 +22,10 @@ namespace TicTacToe.Core
 			ColumnNumber = columnNumber;
 		}
 
+		/// <summary>
+		/// Vẽ bàn cờ
+		/// </summary>
+		/// <param name="graphics"></param>
 		public void DrawBoard(Graphics graphics)
 		{
 			for (int colIndex = 0; colIndex < ColumnNumber; colIndex++)
@@ -34,12 +38,18 @@ namespace TicTacToe.Core
 			}
 		}
 
-		public void DrawChessman(Graphics graphics, int x, int y, bool gone)
+		/// <summary>
+		/// Vẽ quân cờ
+		/// </summary>
+		/// <param name="graphics"></param>
+		/// <param name="x">Tọa độ trục x</param>
+		/// <param name="y">Tọa độ trục y</param>
+		/// <param name="O">Quân O</param>
+		public void DrawChessman(Graphics graphics, int x, int y, bool O)
 		{
-			// Black chessman
-			if (gone)
+			if (O)
 			{
-				graphics.DrawImage(O, x, y);
+				graphics.DrawImage(this.O, x, y);
 			}
 			else
 			{
