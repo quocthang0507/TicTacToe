@@ -13,16 +13,16 @@ namespace TicTacToe.Core
 		public static Pen Pen { get; set; }
 
 		private readonly Random random = new Random();
-		private Board board;
-		private Cell[,] array;
+		private readonly Board board;
+		private readonly Cell[,] array;
 		private bool turnOfX;
 		private Stack<Cell> history;
-		private int[] ArrayOfAttackPoints = new int[7] { 0, 4, 25, 246, 7300, 6561, 59049 };
-		private int[] ArrayOfDefensePoints = new int[7] { 0, 3, 24, 243, 2197, 19773, 177957 };
+		private readonly int[] ArrayOfAttackPoints = new int[7] { 0, 4, 25, 246, 7300, 6561, 59049 };
+		private readonly int[] ArrayOfDefensePoints = new int[7] { 0, 3, 24, 243, 2197, 19773, 177957 };
 
 		public Control()
 		{
-			board = new Board(MainForm.Height / Cell.Height, MainForm.Width / Cell.Width);
+			board = new Board(MainForm.HeightOfPanel / Cell.Height, MainForm.WidthOfPanel / Cell.Width);
 			Pen = new Pen(Color.DarkKhaki, 1);
 			IsReady = false;
 			array = new Cell[board.RowNumber, board.ColumnNumber];
@@ -157,8 +157,8 @@ namespace TicTacToe.Core
 		public void TurnOfComputer(Graphics graphics)
 		{
 			int MaxPoint = 0;
-			int DefensePoint = 0;
-			int AttackPoint = 0;
+			int DefensePoint;
+			int AttackPoint;
 			Cell cell = new Cell();
 
 			if (turnOfX)
@@ -886,7 +886,7 @@ namespace TicTacToe.Core
 			return false;
 		}
 
-		private void DrawWinningLine(Graphics graphics, int x1, int y1, int x2, int y2)
+		private static void DrawWinningLine(Graphics graphics, int x1, int y1, int x2, int y2)
 		{
 			graphics.DrawLine(new Pen(Color.Blue, 3f), x1, y1, x2, y2);
 		}

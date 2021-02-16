@@ -7,10 +7,10 @@ namespace TicTacToe.GUI
 {
 	public partial class MainForm : Form
 	{
-		public static new int Width;
-		public static new int Height;
-		private Graphics graphics;
-		private Core.Control control;
+		public static int WidthOfPanel;
+		public static int HeightOfPanel;
+		private readonly Graphics graphics;
+		private readonly Core.Control control;
 
 		public MainForm()
 		{
@@ -19,8 +19,8 @@ namespace TicTacToe.GUI
 			graphics = panelBoard.CreateGraphics();
 
 			// Lấy kích thước panel để vẽ bàn cờ
-			Width = panelBoard.Width;
-			Height = panelBoard.Height;
+			WidthOfPanel = panelBoard.Width;
+			HeightOfPanel = panelBoard.Height;
 
 			// Khởi tạo đối tượng Control
 			control = new Core.Control();

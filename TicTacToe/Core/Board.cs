@@ -8,8 +8,8 @@ namespace TicTacToe.Core
 		public int RowNumber { get; set; }
 		public int ColumnNumber { get; set; }
 
-		private Image O = new Bitmap(Properties.Resources.o);
-		private Image X = new Bitmap(Properties.Resources.x);
+		private readonly Image O = new Bitmap(Properties.Resources.o);
+		private readonly Image X = new Bitmap(Properties.Resources.x);
 
 		public Board()
 		{
@@ -29,11 +29,11 @@ namespace TicTacToe.Core
 		/// <param name="graphics"></param>
 		public void DrawBoard(Graphics graphics)
 		{
-			for (int colIndex = 0; colIndex < ColumnNumber; colIndex++)
+			for (int colIndex = 0; colIndex <= ColumnNumber; colIndex++)
 			{
 				graphics.DrawLine(Control.Pen, colIndex * Cell.Width, 0, colIndex * Cell.Width, RowNumber * Cell.Height);
 			}
-			for (int rowIndex = 0; rowIndex < RowNumber; rowIndex++)
+			for (int rowIndex = 0; rowIndex <= RowNumber; rowIndex++)
 			{
 				graphics.DrawLine(Control.Pen, 0, rowIndex * Cell.Height, ColumnNumber * Cell.Width, rowIndex * Cell.Height);
 			}

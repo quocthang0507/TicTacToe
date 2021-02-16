@@ -46,7 +46,7 @@ namespace TicTacToe.GUI
             this.aboutToolStripMenuItem});
 			this.menuBar.Location = new System.Drawing.Point(0, 0);
 			this.menuBar.Name = "menuBar";
-			this.menuBar.Size = new System.Drawing.Size(899, 24);
+			this.menuBar.Size = new System.Drawing.Size(884, 24);
 			this.menuBar.TabIndex = 0;
 			this.menuBar.Text = "menuStrip1";
 			// 
@@ -87,7 +87,7 @@ namespace TicTacToe.GUI
 			this.panelBoard.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelBoard.Location = new System.Drawing.Point(0, 24);
 			this.panelBoard.Name = "panelBoard";
-			this.panelBoard.Size = new System.Drawing.Size(899, 577);
+			this.panelBoard.Size = new System.Drawing.Size(884, 537);
 			this.panelBoard.TabIndex = 1;
 			this.panelBoard.Paint += new System.Windows.Forms.PaintEventHandler(this.panelBoard_Paint);
 			this.panelBoard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelBoard_MouseClick);
@@ -96,7 +96,7 @@ namespace TicTacToe.GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(899, 601);
+			this.ClientSize = new System.Drawing.Size(884, 561);
 			this.Controls.Add(this.panelBoard);
 			this.Controls.Add(this.menuBar);
 			this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);

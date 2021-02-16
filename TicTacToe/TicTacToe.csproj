@@ -8,6 +8,7 @@
     <PackageIcon>tictactoe.png</PackageIcon>
     <PackageProjectUrl>https://github.com/quocthang0507/TicTacToe</PackageProjectUrl>
     <RepositoryUrl>https://github.com/quocthang0507/TicTacToe</RepositoryUrl>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
