@@ -21,14 +21,14 @@
 		/// <summary>
 		/// Ô hiện tại đã đi chưa? Nếu rồi thì thuộc về quân nào? True là đen, false là trắng
 		/// </summary>
-		public bool? HadGone { get; set; }
+		public Gone HadGone { get; set; }
 
 		public Cell()
 		{
 
 		}
 
-		public Cell(int rowIndex, int colIndex, bool? gone)
+		public Cell(int rowIndex, int colIndex, Gone gone)
 		{
 			this.RowIndex = rowIndex;
 			this.ColIndex = colIndex;

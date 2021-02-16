@@ -42,7 +42,6 @@ namespace TicTacToe.GUI
 			graphics.Clear(panelBoard.BackColor);
 			Image image = new Bitmap(Properties.Resources.background);
 			panelBoard.BackgroundImage = image;
-
 		}
 
 		private void panelBoard_Paint(object sender, PaintEventArgs e)

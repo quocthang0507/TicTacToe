@@ -15,7 +15,7 @@ namespace TicTacToe.Core
 		private readonly Random random = new Random();
 		private Board board;
 		private Cell[,] array;
-		private bool turnOfBlack;
+		private bool turnOfX;
 		private Stack<Cell> history;
 		private int[] ArrayOfAttackPoints = new int[7] { 0, 4, 25, 246, 7300, 6561, 59049 };
 		private int[] ArrayOfDefensePoints = new int[7] { 0, 3, 24, 243, 2197, 19773, 177957 };
@@ -46,7 +46,7 @@ namespace TicTacToe.Core
 			{
 				for (int colIndex = 0; colIndex < board.ColumnNumber; colIndex++)
 				{
-					array[rowIndex, colIndex] = new Cell(rowIndex, colIndex, null);
+					array[rowIndex, colIndex] = new Cell(rowIndex, colIndex, Gone.None);
 				}
 			}
 		}
@@ -65,24 +65,24 @@ namespace TicTacToe.Core
 			if (yPos % Cell.Height != 0 && xPos % Cell.Width != 0)
 			{
 				// Nếu ô chưa đi
-				if (!array[row, column].HadGone == null)
+				if (array[row, column].HadGone == Gone.None)
 				{
-					// Quân đen đi
-					if (turnOfBlack)
+					// Quân x đi
+					if (turnOfX)
 					{
-						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, turnOfBlack);
-						array[row, column].HadGone = true;
+						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, Gone.X);
+						array[row, column].HadGone = Gone.X;
 
-						// Mời quân trắng đi
-						turnOfBlack = false;
+						// Mời quân o đi
+						turnOfX = false;
 					}
-					// Quân trắng đi
+					// Quân o đi
 					else
 					{
-						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, turnOfBlack);
-						array[row, column].HadGone = false;
+						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, Gone.O);
+						array[row, column].HadGone = Gone.O;
 
-						turnOfBlack = true;
+						turnOfX = true;
 					}
 					Cell cell = array[row, column].Clone();
 					history.Push(cell);
@@ -112,14 +112,14 @@ namespace TicTacToe.Core
 		public void PlayWithHuman(Graphics graphics)
 		{
 			Mode = 1;
-			turnOfBlack = Convert.ToBoolean(random.Next(0, 2));
-			if (turnOfBlack)
+			turnOfX = Convert.ToBoolean(random.Next(0, 2));
+			if (turnOfX)
 			{
-				MessageBox.Show("Quân đen đi trước");
+				MessageBox.Show("X đi trước", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			else
 			{
-				MessageBox.Show("Quân trắng đi trước");
+				MessageBox.Show("O đi trước", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			IsReady = true;
 			Initialize();
@@ -134,14 +134,14 @@ namespace TicTacToe.Core
 		public void PlayWithComputer(Graphics graphics)
 		{
 			Mode = 2;
-			turnOfBlack = Convert.ToBoolean(random.Next(0, 2));
-			if (turnOfBlack)
+			turnOfX = Convert.ToBoolean(random.Next(0, 2));
+			if (turnOfX)
 			{
-				MessageBox.Show("Quân đen đi trước");
+				MessageBox.Show("X đi trước", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			else
 			{
-				MessageBox.Show("Quân trắng đi trước");
+				MessageBox.Show("O đi trước", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			IsReady = true;
 			Initialize();
@@ -161,7 +161,7 @@ namespace TicTacToe.Core
 			int AttackPoint = 0;
 			Cell cell = new Cell();
 
-			if (turnOfBlack)
+			if (turnOfX)
 			{
 				if (history.Count == 0)
 				{
@@ -177,7 +177,7 @@ namespace TicTacToe.Core
 						for (int j = 0; j < board.ColumnNumber; j++)
 						{
 							// Nếu ô tại [i, j] chưa đi và không bị cắt tỉa thì dùng MinMax
-							if (!array[i, j].HadGone == null && !Prune(array[i, j]))
+							if (array[i, j].HadGone == Gone.None && !Prune(array[i, j]))
 							{
 								int centroid;
 								AttackPoint = TraversalAttack_Horizontal(i, j) + TravelsalAttack_Vertical(i, j) + TraversalAttack_PriDiagonal(i, j) + TraversalAttack_SecDiagonal(i, j);
@@ -318,13 +318,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && row > 4 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row - i, column + i].HadGone == false)
+				if (array[row - i, column + i].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row - i, column + i].HadGone == true)
+				else if (array[row - i, column + i].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -348,13 +348,13 @@ namespace TicTacToe.Core
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5 && column > 4; i++)
 			{
 				// Gặp quân địch
-				if (array[row + i, column - i].HadGone == false)
+				if (array[row + i, column - i].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row + i, column - i].HadGone == true)
+				else if (array[row + i, column - i].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -399,13 +399,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row + i, column + i].HadGone == false)
+				if (array[row + i, column + i].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row + i, column + i].HadGone == true)
+				else if (array[row + i, column + i].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -429,13 +429,13 @@ namespace TicTacToe.Core
 			for (int i = 1; i <= 4 && row > 4 && column > 4; i++)
 			{
 				// Gặp quân địch
-				if (array[row - i, column - i].HadGone == false)
+				if (array[row - i, column - i].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row - i, column - i].HadGone == true)
+				else if (array[row - i, column - i].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -480,13 +480,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && row > 4; i++)
 			{
-				if (array[row - i, column].HadGone == false)
+				if (array[row - i, column].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row - i, column].HadGone == true)
+				else if (array[row - i, column].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -510,13 +510,13 @@ namespace TicTacToe.Core
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5; i++)
 			{
 				// Gặp quân địch
-				if (array[row + i, column].HadGone == false)
+				if (array[row + i, column].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row + i, column].HadGone == true)
+				else if (array[row + i, column].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -561,13 +561,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row, column + i].HadGone == false)
+				if (array[row, column + i].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row, column + i].HadGone == true)
+				else if (array[row, column + i].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -589,13 +589,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && column > 4; i++)
 			{
-				if (array[row, column - i].HadGone == false)
+				if (array[row, column - i].HadGone == Gone.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row, column - i].HadGone == true)
+				else if (array[row, column - i].HadGone == Gone.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -642,14 +642,14 @@ namespace TicTacToe.Core
 			// Đường chéo ngược lên
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5 && row > 4; i++)
 			{
-				if (array[row - i, column + i].HadGone == true)
+				if (array[row - i, column + i].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row - i, column + i].HadGone == false)
+				else if (array[row - i, column + i].HadGone == Gone.O)
 				{
 					TopDiagonalEnemies++;
 					break;
@@ -660,14 +660,14 @@ namespace TicTacToe.Core
 			// Đường chéo ngược xuống
 			for (int i = 1; i <= 4 && column > 4 && row < board.RowNumber - 5; i++)
 			{
-				if (array[row + i, column - i].HadGone == true)
+				if (array[row + i, column - i].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row + i, column - i].HadGone == false)
+				else if (array[row + i, column - i].HadGone == Gone.O)
 				{
 					BottomDiagonalEnemies++;
 					break;
@@ -701,14 +701,14 @@ namespace TicTacToe.Core
 			// Đường chéo xuôi xuống
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5 && row < board.RowNumber - 5; i++)
 			{
-				if (array[row + i, column + i].HadGone == true)
+				if (array[row + i, column + i].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row + i, column + i].HadGone == false)
+				else if (array[row + i, column + i].HadGone == Gone.O)
 				{
 					TopDiagonalEnemies++;
 					break;
@@ -719,14 +719,14 @@ namespace TicTacToe.Core
 			// Đường chéo xuôi lên
 			for (int i = 1; i <= 4 && row > 4 && column > 4; i++)
 			{
-				if (array[row - i, column - i].HadGone == true)
+				if (array[row - i, column - i].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row - i, column - i].HadGone == false)
+				else if (array[row - i, column - i].HadGone == Gone.O)
 				{
 					BottomDiagonalEnemies++;
 					break;
@@ -760,14 +760,14 @@ namespace TicTacToe.Core
 			// Bên trên
 			for (int i = 1; i <= 4 && row > 4; i++)
 			{
-				if (array[row - i, column].HadGone == true)
+				if (array[row - i, column].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row - i, column].HadGone == false)
+				else if (array[row - i, column].HadGone == Gone.O)
 				{
 					TopEnemies++;
 					break;
@@ -778,14 +778,14 @@ namespace TicTacToe.Core
 			// Bên dưới
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5; i++)
 			{
-				if (array[row + i, column].HadGone == true)
+				if (array[row + i, column].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row + i, column].HadGone == false)
+				else if (array[row + i, column].HadGone == Gone.O)
 				{
 					BottomEnemies++;
 					break;
@@ -819,14 +819,14 @@ namespace TicTacToe.Core
 			// Bên phải
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row, column + i].HadGone == true)
+				if (array[row, column + i].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row, column + i].HadGone == false)
+				else if (array[row, column + i].HadGone == Gone.O)
 				{
 					RightEnemies++;
 					break;
@@ -837,7 +837,7 @@ namespace TicTacToe.Core
 			// Bên trái
 			for (int i = 1; i <= 4 && column > 4; i++)
 			{
-				if (array[row, column - i].HadGone == true)
+				if (array[row, column - i].HadGone == Gone.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
@@ -845,7 +845,7 @@ namespace TicTacToe.Core
 					SpaceCells++;
 
 				}
-				else if (array[row, column - i].HadGone == false)
+				else if (array[row, column - i].HadGone == Gone.O)
 				{
 					LeftEnemies++;
 					break;
@@ -896,23 +896,23 @@ namespace TicTacToe.Core
 			// Chơi với người
 			if (Mode == 1)
 			{
-				if (cell.HadGone == true)
-					MessageBox.Show("Quân đỏ thắng");
+				if (cell.HadGone == Gone.X)
+					MessageBox.Show("Quân X thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				else
-					MessageBox.Show("Quân xanh thắng");
+					MessageBox.Show("Quân O thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			// Chơi với máy
 			else
 			{
-				if (cell.HadGone == true)
-					MessageBox.Show("Máy thắng");
+				if (cell.HadGone == Gone.O)
+					MessageBox.Show("Máy thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				else
-					MessageBox.Show("Người chơi thắng");
+					MessageBox.Show("Người chơi thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			IsReady = false;
 		}
 
-		private bool RightTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool RightTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex > board.ColumnNumber - 5)
 				return false;
@@ -925,7 +925,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool LeftTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool LeftTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (colIndex < 4)
 				return false;
@@ -938,7 +938,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool TopTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool TopTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex < 4 || colIndex < 4)
 				return false;
@@ -951,7 +951,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool BottomTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool BottomTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex > board.RowNumber - 5)
 				return false;
@@ -964,7 +964,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool TopTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool TopTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex < 4 || colIndex < 4)
 				return false;
@@ -979,7 +979,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool BottomTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool BottomTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex > board.RowNumber - 5 || colIndex > board.ColumnNumber - 5)
 				return false;
@@ -994,7 +994,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool TopTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool TopTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex < 4 || colIndex > board.ColumnNumber - 5)
 				return false;
@@ -1009,7 +1009,7 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool BottomTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, bool? hadGone)
+		private bool BottomTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
 		{
 			if (rowIndex > board.RowNumber - 5 || colIndex < 4)
 				return false;

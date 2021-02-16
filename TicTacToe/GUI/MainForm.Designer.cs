@@ -46,7 +46,7 @@ namespace TicTacToe.GUI
             this.aboutToolStripMenuItem});
 			this.menuBar.Location = new System.Drawing.Point(0, 0);
 			this.menuBar.Name = "menuBar";
-			this.menuBar.Size = new System.Drawing.Size(800, 24);
+			this.menuBar.Size = new System.Drawing.Size(899, 24);
 			this.menuBar.TabIndex = 0;
 			this.menuBar.Text = "menuStrip1";
 			// 
@@ -85,9 +85,9 @@ namespace TicTacToe.GUI
 			// 
 			this.panelBoard.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.panelBoard.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelBoard.Location = new System.Drawing.Point(0, 0);
+			this.panelBoard.Location = new System.Drawing.Point(0, 24);
 			this.panelBoard.Name = "panelBoard";
-			this.panelBoard.Size = new System.Drawing.Size(800, 450);
+			this.panelBoard.Size = new System.Drawing.Size(899, 577);
 			this.panelBoard.TabIndex = 1;
 			this.panelBoard.Paint += new System.Windows.Forms.PaintEventHandler(this.panelBoard_Paint);
 			this.panelBoard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelBoard_MouseClick);
@@ -96,13 +96,15 @@ namespace TicTacToe.GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.Controls.Add(this.menuBar);
+			this.ClientSize = new System.Drawing.Size(899, 601);
 			this.Controls.Add(this.panelBoard);
+			this.Controls.Add(this.menuBar);
 			this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuBar;
+			this.MaximizeBox = false;
 			this.Name = "MainForm";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Tic Tac Toe";
 			this.menuBar.ResumeLayout(false);
 			this.menuBar.PerformLayout();

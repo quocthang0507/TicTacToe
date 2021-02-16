@@ -46,9 +46,9 @@ namespace TicTacToe.Core
 		/// <param name="x">Tọa độ trục x</param>
 		/// <param name="y">Tọa độ trục y</param>
 		/// <param name="O">Quân O</param>
-		public void DrawChessman(Graphics graphics, int x, int y, bool? O)
+		public void DrawChessman(Graphics graphics, int x, int y, Gone gone)
 		{
-			if (Convert.ToBoolean(O))
+			if (gone == Gone.O)
 			{
 				graphics.DrawImage(this.O, x, y);
 			}
