@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
+using System.Media;
 using System.Windows.Forms;
+using TicTacToe.Core;
 
 namespace TicTacToe.GUI
 {
@@ -73,6 +75,7 @@ namespace TicTacToe.GUI
 						control.FindWinner(graphics);
 					}
 				}
+				Media.PlayClickingSound();
 			}
 		}
 	}

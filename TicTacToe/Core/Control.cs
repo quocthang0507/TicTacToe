@@ -221,12 +221,12 @@ namespace TicTacToe.Core
 			// Duyệt từ trên xuống
 			if (cell.RowIndex <= board.RowNumber - 5 && cell.ColIndex <= board.ColumnNumber - 5)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex + i, cell.ColIndex + i].HadGone != null)
+					if (array[cell.RowIndex + i, cell.ColIndex + i].HadGone != Gone.None)
 						return false;
 			// Duyệt từ dưới lên
 			if (cell.ColIndex >= 4 && cell.RowIndex >= 4)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex - i, cell.ColIndex - i].HadGone != null)
+					if (array[cell.RowIndex - i, cell.ColIndex - i].HadGone != Gone.None)
 						return false;
 			return true;
 		}
@@ -241,12 +241,12 @@ namespace TicTacToe.Core
 			// Duyệt từ trên xuống
 			if (cell.RowIndex <= board.RowNumber - 5 && cell.ColIndex >= 4)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex + i, cell.ColIndex - i].HadGone != null)
+					if (array[cell.RowIndex + i, cell.ColIndex - i].HadGone != Gone.None)
 						return false;
 			// Duyệt từ dưới lên
 			if (cell.ColIndex <= board.ColumnNumber - 5 && cell.RowIndex >= 4)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex - i, cell.ColIndex + i].HadGone != null)
+					if (array[cell.RowIndex - i, cell.ColIndex + i].HadGone != Gone.None)
 						return false;
 			return true;
 		}
@@ -262,13 +262,13 @@ namespace TicTacToe.Core
 			if (cell.RowIndex <= board.RowNumber - 5)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex + i, cell.ColIndex].HadGone != null)
+					if (array[cell.RowIndex + i, cell.ColIndex].HadGone != Gone.None)
 						return false;
 			// Duyệt phía trên
 			if (cell.RowIndex >= 4)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex - i, cell.ColIndex].HadGone != null)
+					if (array[cell.RowIndex - i, cell.ColIndex].HadGone != Gone.None)
 						return false;
 			return true;
 		}
@@ -284,13 +284,13 @@ namespace TicTacToe.Core
 			if (cell.ColIndex <= board.ColumnNumber - 5)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex, cell.ColIndex + i].HadGone != null)
+					if (array[cell.RowIndex, cell.ColIndex + i].HadGone != Gone.None)
 						return false;
 			// Duyệt trái
 			if (cell.ColIndex >= 4)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex, cell.ColIndex - i].HadGone != null)
+					if (array[cell.RowIndex, cell.ColIndex - i].HadGone != Gone.None)
 						return false;
 			return true;
 		}
@@ -904,10 +904,16 @@ namespace TicTacToe.Core
 			// Chơi với máy
 			else
 			{
-				if (cell.HadGone == Gone.O)
+				if (cell.HadGone == Gone.X)
+				{
 					MessageBox.Show("Máy thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					Media.PlayFailingSound();
+				}
 				else
+				{
 					MessageBox.Show("Người chơi thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					Media.PlayWinningSound();
+				}
 			}
 			IsReady = false;
 		}
