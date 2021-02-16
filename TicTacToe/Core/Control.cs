@@ -8,11 +8,9 @@ namespace TicTacToe.Core
 {
 	public class Control
 	{
-		public static Pen Pen;
-		public static SolidBrush Black;
-		public static SolidBrush White;
 		public int Mode { get; set; }
 		public bool IsReady { get; set; }
+		public static Pen Pen { get; set; }
 
 		private readonly Random random = new Random();
 		private Board board;
@@ -26,8 +24,6 @@ namespace TicTacToe.Core
 		{
 			board = new Board(MainForm.Height / Cell.Height, MainForm.Width / Cell.Width);
 			Pen = new Pen(Color.DarkKhaki, 1);
-			Black = new SolidBrush(Color.Black);
-			White = new SolidBrush(Color.White);
 			IsReady = false;
 			array = new Cell[board.RowNumber, board.ColumnNumber];
 		}
@@ -50,7 +46,7 @@ namespace TicTacToe.Core
 			{
 				for (int colIndex = 0; colIndex < board.ColumnNumber; colIndex++)
 				{
-					array[rowIndex, colIndex] = new Cell(rowIndex, colIndex, false);
+					array[rowIndex, colIndex] = new Cell(rowIndex, colIndex, null);
 				}
 			}
 		}
@@ -908,7 +904,7 @@ namespace TicTacToe.Core
 			// Chơi với máy
 			else
 			{
-				if (cell.HadGone == false)
+				if (cell.HadGone == true)
 					MessageBox.Show("Máy thắng");
 				else
 					MessageBox.Show("Người chơi thắng");
@@ -972,9 +968,9 @@ namespace TicTacToe.Core
 		{
 			if (rowIndex < 4 || colIndex < 4)
 				return false;
-			for (int dem = 1; dem <= 4; dem++)
+			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex - dem, colIndex - dem].HadGone != hadGone)
+				if (array[rowIndex - i, colIndex - i].HadGone != hadGone)
 				{
 					return false;
 				}
@@ -987,9 +983,9 @@ namespace TicTacToe.Core
 		{
 			if (rowIndex > board.RowNumber - 5 || colIndex > board.ColumnNumber - 5)
 				return false;
-			for (int dem = 1; dem <= 4; dem++)
+			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex + dem, colIndex + dem].HadGone != hadGone)
+				if (array[rowIndex + i, colIndex + i].HadGone != hadGone)
 				{
 					return false;
 				}
@@ -1002,9 +998,9 @@ namespace TicTacToe.Core
 		{
 			if (rowIndex < 4 || colIndex > board.ColumnNumber - 5)
 				return false;
-			for (int dem = 1; dem <= 4; dem++)
+			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex - dem, colIndex + dem].HadGone != hadGone)
+				if (array[rowIndex - i, colIndex + i].HadGone != hadGone)
 				{
 					return false;
 				}
@@ -1017,9 +1013,9 @@ namespace TicTacToe.Core
 		{
 			if (rowIndex > board.RowNumber - 5 || colIndex < 4)
 				return false;
-			for (int dem = 1; dem <= 4; dem++)
+			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex + dem, colIndex - dem].HadGone != hadGone)
+				if (array[rowIndex + i, colIndex - i].HadGone != hadGone)
 				{
 					return false;
 				}
