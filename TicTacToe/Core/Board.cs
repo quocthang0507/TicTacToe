@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace TicTacToe.Core
 {
@@ -45,9 +46,9 @@ namespace TicTacToe.Core
 		/// <param name="x">Tọa độ trục x</param>
 		/// <param name="y">Tọa độ trục y</param>
 		/// <param name="O">Quân O</param>
-		public void DrawChessman(Graphics graphics, int x, int y, bool O)
+		public void DrawChessman(Graphics graphics, int x, int y, bool? O)
 		{
-			if (O)
+			if (Convert.ToBoolean(O))
 			{
 				graphics.DrawImage(this.O, x, y);
 			}
