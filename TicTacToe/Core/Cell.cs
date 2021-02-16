@@ -21,18 +21,18 @@
 		/// <summary>
 		/// Ô hiện tại đã đi chưa? Nếu rồi thì thuộc về quân nào? True là đen, false là trắng
 		/// </summary>
-		public Gone HadGone { get; set; }
+		public Possessive Possessive { get; set; }
 
 		public Cell()
 		{
 
 		}
 
-		public Cell(int rowIndex, int colIndex, Gone gone)
+		public Cell(int rowIndex, int colIndex, Possessive possessive)
 		{
 			this.RowIndex = rowIndex;
 			this.ColIndex = colIndex;
-			this.HadGone = gone;
+			this.Possessive = possessive;
 		}
 
 		public Cell Clone()

@@ -8,7 +8,7 @@ namespace TicTacToe.Core
 {
 	public class Control
 	{
-		public int Mode { get; set; }
+		public PlayingMode Mode { get; set; }
 		public bool IsReady { get; set; }
 		public static Pen Pen { get; set; }
 
@@ -46,7 +46,7 @@ namespace TicTacToe.Core
 			{
 				for (int colIndex = 0; colIndex < board.ColumnNumber; colIndex++)
 				{
-					array[rowIndex, colIndex] = new Cell(rowIndex, colIndex, Gone.None);
+					array[rowIndex, colIndex] = new Cell(rowIndex, colIndex, Possessive.None);
 				}
 			}
 		}
@@ -65,13 +65,13 @@ namespace TicTacToe.Core
 			if (yPos % Cell.Height != 0 && xPos % Cell.Width != 0)
 			{
 				// Nếu ô chưa đi
-				if (array[row, column].HadGone == Gone.None)
+				if (array[row, column].Possessive == Possessive.None)
 				{
 					// Quân x đi
 					if (turnOfX)
 					{
-						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, Gone.X);
-						array[row, column].HadGone = Gone.X;
+						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, Possessive.X);
+						array[row, column].Possessive = Possessive.X;
 
 						// Mời quân o đi
 						turnOfX = false;
@@ -79,8 +79,8 @@ namespace TicTacToe.Core
 					// Quân o đi
 					else
 					{
-						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, Gone.O);
-						array[row, column].HadGone = Gone.O;
+						board.DrawChessman(graphics, column * Cell.Height, row * Cell.Width, Possessive.O);
+						array[row, column].Possessive = Possessive.O;
 
 						turnOfX = true;
 					}
@@ -100,7 +100,7 @@ namespace TicTacToe.Core
 			{
 				foreach (Cell cell in history)
 				{
-					board.DrawChessman(graphics, cell.ColIndex * Cell.Width, cell.RowIndex * Cell.Height, cell.HadGone);
+					board.DrawChessman(graphics, cell.ColIndex * Cell.Width, cell.RowIndex * Cell.Height, cell.Possessive);
 				}
 			}
 		}
@@ -111,7 +111,7 @@ namespace TicTacToe.Core
 		/// <param name="graphics"></param>
 		public void PlayWithHuman(Graphics graphics)
 		{
-			Mode = 1;
+			Mode = PlayingMode.Human;
 			turnOfX = Convert.ToBoolean(random.Next(0, 2));
 			if (turnOfX)
 			{
@@ -133,7 +133,7 @@ namespace TicTacToe.Core
 		/// <param name="graphics"></param>
 		public void PlayWithComputer(Graphics graphics)
 		{
-			Mode = 2;
+			Mode = PlayingMode.Computer;
 			turnOfX = Convert.ToBoolean(random.Next(0, 2));
 			if (turnOfX)
 			{
@@ -177,7 +177,7 @@ namespace TicTacToe.Core
 						for (int j = 0; j < board.ColumnNumber; j++)
 						{
 							// Nếu ô tại [i, j] chưa đi và không bị cắt tỉa thì dùng MinMax
-							if (array[i, j].HadGone == Gone.None && !Prune(array[i, j]))
+							if (array[i, j].Possessive == Possessive.None && !Prune(array[i, j]))
 							{
 								int centroid;
 								AttackPoint = TraversalAttack_Horizontal(i, j) + TravelsalAttack_Vertical(i, j) + TraversalAttack_PriDiagonal(i, j) + TraversalAttack_SecDiagonal(i, j);
@@ -188,7 +188,7 @@ namespace TicTacToe.Core
 								if (MaxPoint < centroid)
 								{
 									MaxPoint = centroid;
-									cell = new Cell(array[i, j].RowIndex, array[i, j].ColIndex, array[i, j].HadGone);
+									cell = new Cell(array[i, j].RowIndex, array[i, j].ColIndex, array[i, j].Possessive);
 								}
 							}
 						}
@@ -221,12 +221,12 @@ namespace TicTacToe.Core
 			// Duyệt từ trên xuống
 			if (cell.RowIndex <= board.RowNumber - 5 && cell.ColIndex <= board.ColumnNumber - 5)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex + i, cell.ColIndex + i].HadGone != Gone.None)
+					if (array[cell.RowIndex + i, cell.ColIndex + i].Possessive != Possessive.None)
 						return false;
 			// Duyệt từ dưới lên
 			if (cell.ColIndex >= 4 && cell.RowIndex >= 4)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex - i, cell.ColIndex - i].HadGone != Gone.None)
+					if (array[cell.RowIndex - i, cell.ColIndex - i].Possessive != Possessive.None)
 						return false;
 			return true;
 		}
@@ -241,12 +241,12 @@ namespace TicTacToe.Core
 			// Duyệt từ trên xuống
 			if (cell.RowIndex <= board.RowNumber - 5 && cell.ColIndex >= 4)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex + i, cell.ColIndex - i].HadGone != Gone.None)
+					if (array[cell.RowIndex + i, cell.ColIndex - i].Possessive != Possessive.None)
 						return false;
 			// Duyệt từ dưới lên
 			if (cell.ColIndex <= board.ColumnNumber - 5 && cell.RowIndex >= 4)
 				for (int i = 1; i <= 4; i++)
-					if (array[cell.RowIndex - i, cell.ColIndex + i].HadGone != Gone.None)
+					if (array[cell.RowIndex - i, cell.ColIndex + i].Possessive != Possessive.None)
 						return false;
 			return true;
 		}
@@ -262,13 +262,13 @@ namespace TicTacToe.Core
 			if (cell.RowIndex <= board.RowNumber - 5)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex + i, cell.ColIndex].HadGone != Gone.None)
+					if (array[cell.RowIndex + i, cell.ColIndex].Possessive != Possessive.None)
 						return false;
 			// Duyệt phía trên
 			if (cell.RowIndex >= 4)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex - i, cell.ColIndex].HadGone != Gone.None)
+					if (array[cell.RowIndex - i, cell.ColIndex].Possessive != Possessive.None)
 						return false;
 			return true;
 		}
@@ -284,13 +284,13 @@ namespace TicTacToe.Core
 			if (cell.ColIndex <= board.ColumnNumber - 5)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex, cell.ColIndex + i].HadGone != Gone.None)
+					if (array[cell.RowIndex, cell.ColIndex + i].Possessive != Possessive.None)
 						return false;
 			// Duyệt trái
 			if (cell.ColIndex >= 4)
 				for (int i = 1; i <= 4; i++)
 					// Nếu ô đã đi thì không cắt tỉa
-					if (array[cell.RowIndex, cell.ColIndex - i].HadGone != Gone.None)
+					if (array[cell.RowIndex, cell.ColIndex - i].Possessive != Possessive.None)
 						return false;
 			return true;
 		}
@@ -318,13 +318,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && row > 4 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row - i, column + i].HadGone == Gone.O)
+				if (array[row - i, column + i].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row - i, column + i].HadGone == Gone.X)
+				else if (array[row - i, column + i].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -348,13 +348,13 @@ namespace TicTacToe.Core
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5 && column > 4; i++)
 			{
 				// Gặp quân địch
-				if (array[row + i, column - i].HadGone == Gone.O)
+				if (array[row + i, column - i].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row + i, column - i].HadGone == Gone.X)
+				else if (array[row + i, column - i].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -399,13 +399,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row + i, column + i].HadGone == Gone.O)
+				if (array[row + i, column + i].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row + i, column + i].HadGone == Gone.X)
+				else if (array[row + i, column + i].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -429,13 +429,13 @@ namespace TicTacToe.Core
 			for (int i = 1; i <= 4 && row > 4 && column > 4; i++)
 			{
 				// Gặp quân địch
-				if (array[row - i, column - i].HadGone == Gone.O)
+				if (array[row - i, column - i].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row - i, column - i].HadGone == Gone.X)
+				else if (array[row - i, column - i].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -480,13 +480,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && row > 4; i++)
 			{
-				if (array[row - i, column].HadGone == Gone.O)
+				if (array[row - i, column].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row - i, column].HadGone == Gone.X)
+				else if (array[row - i, column].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -510,13 +510,13 @@ namespace TicTacToe.Core
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5; i++)
 			{
 				// Gặp quân địch
-				if (array[row + i, column].HadGone == Gone.O)
+				if (array[row + i, column].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row + i, column].HadGone == Gone.X)
+				else if (array[row + i, column].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -561,13 +561,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row, column + i].HadGone == Gone.O)
+				if (array[row, column + i].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row, column + i].HadGone == Gone.X)
+				else if (array[row, column + i].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -589,13 +589,13 @@ namespace TicTacToe.Core
 
 			for (int i = 1; i <= 4 && column > 4; i++)
 			{
-				if (array[row, column - i].HadGone == Gone.O)
+				if (array[row, column - i].Possessive == Possessive.O)
 				{
 					if (i == 1)
 						DefensePoint += 9;
 					Enemies++;
 				}
-				else if (array[row, column - i].HadGone == Gone.X)
+				else if (array[row, column - i].Possessive == Possessive.X)
 				{
 					if (i == 4)
 						DefensePoint -= 170;
@@ -642,14 +642,14 @@ namespace TicTacToe.Core
 			// Đường chéo ngược lên
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5 && row > 4; i++)
 			{
-				if (array[row - i, column + i].HadGone == Gone.X)
+				if (array[row - i, column + i].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row - i, column + i].HadGone == Gone.O)
+				else if (array[row - i, column + i].Possessive == Possessive.O)
 				{
 					TopDiagonalEnemies++;
 					break;
@@ -660,14 +660,14 @@ namespace TicTacToe.Core
 			// Đường chéo ngược xuống
 			for (int i = 1; i <= 4 && column > 4 && row < board.RowNumber - 5; i++)
 			{
-				if (array[row + i, column - i].HadGone == Gone.X)
+				if (array[row + i, column - i].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row + i, column - i].HadGone == Gone.O)
+				else if (array[row + i, column - i].Possessive == Possessive.O)
 				{
 					BottomDiagonalEnemies++;
 					break;
@@ -701,14 +701,14 @@ namespace TicTacToe.Core
 			// Đường chéo xuôi xuống
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5 && row < board.RowNumber - 5; i++)
 			{
-				if (array[row + i, column + i].HadGone == Gone.X)
+				if (array[row + i, column + i].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row + i, column + i].HadGone == Gone.O)
+				else if (array[row + i, column + i].Possessive == Possessive.O)
 				{
 					TopDiagonalEnemies++;
 					break;
@@ -719,14 +719,14 @@ namespace TicTacToe.Core
 			// Đường chéo xuôi lên
 			for (int i = 1; i <= 4 && row > 4 && column > 4; i++)
 			{
-				if (array[row - i, column - i].HadGone == Gone.X)
+				if (array[row - i, column - i].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row - i, column - i].HadGone == Gone.O)
+				else if (array[row - i, column - i].Possessive == Possessive.O)
 				{
 					BottomDiagonalEnemies++;
 					break;
@@ -760,14 +760,14 @@ namespace TicTacToe.Core
 			// Bên trên
 			for (int i = 1; i <= 4 && row > 4; i++)
 			{
-				if (array[row - i, column].HadGone == Gone.X)
+				if (array[row - i, column].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row - i, column].HadGone == Gone.O)
+				else if (array[row - i, column].Possessive == Possessive.O)
 				{
 					TopEnemies++;
 					break;
@@ -778,14 +778,14 @@ namespace TicTacToe.Core
 			// Bên dưới
 			for (int i = 1; i <= 4 && row < board.RowNumber - 5; i++)
 			{
-				if (array[row + i, column].HadGone == Gone.X)
+				if (array[row + i, column].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row + i, column].HadGone == Gone.O)
+				else if (array[row + i, column].Possessive == Possessive.O)
 				{
 					BottomEnemies++;
 					break;
@@ -819,14 +819,14 @@ namespace TicTacToe.Core
 			// Bên phải
 			for (int i = 1; i <= 4 && column < board.ColumnNumber - 5; i++)
 			{
-				if (array[row, column + i].HadGone == Gone.X)
+				if (array[row, column + i].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
 					Our++;
 					SpaceCells++;
 				}
-				else if (array[row, column + i].HadGone == Gone.O)
+				else if (array[row, column + i].Possessive == Possessive.O)
 				{
 					RightEnemies++;
 					break;
@@ -837,7 +837,7 @@ namespace TicTacToe.Core
 			// Bên trái
 			for (int i = 1; i <= 4 && column > 4; i++)
 			{
-				if (array[row, column - i].HadGone == Gone.X)
+				if (array[row, column - i].Possessive == Possessive.X)
 				{
 					if (i == 1)
 						AttackPoint += 37;
@@ -845,7 +845,7 @@ namespace TicTacToe.Core
 					SpaceCells++;
 
 				}
-				else if (array[row, column - i].HadGone == Gone.O)
+				else if (array[row, column - i].Possessive == Possessive.O)
 				{
 					LeftEnemies++;
 					break;
@@ -870,14 +870,14 @@ namespace TicTacToe.Core
 			if (history.Count != 0)
 				foreach (Cell cell in history)
 				{
-					if (RightTraversal_Horizontal(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| LeftTraversal_Horizontal(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| TopTraversal_Vertical(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| BottomTraversal_Vertical(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| TopTraversal_PriDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| BottomTraversal_PriDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| TopTraversal_SecDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone)
-						|| BottomTraversal_SecDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.HadGone))
+					if (RightTraversal_Horizontal(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| LeftTraversal_Horizontal(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| TopTraversal_Vertical(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| BottomTraversal_Vertical(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| TopTraversal_PriDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| BottomTraversal_PriDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| TopTraversal_SecDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive)
+						|| BottomTraversal_SecDiagonal(graphics, cell.RowIndex, cell.ColIndex, cell.Possessive))
 					{
 						EndGame(cell);
 						return true;
@@ -888,23 +888,25 @@ namespace TicTacToe.Core
 
 		private static void DrawWinningLine(Graphics graphics, int x1, int y1, int x2, int y2)
 		{
-			graphics.DrawLine(new Pen(Color.Blue, 3f), x1, y1, x2, y2);
+			Pen pen = new Pen(Color.Yellow, 3f);
+			graphics.DrawLine(pen, x1, y1, x2, y2);
 		}
 
 		private void EndGame(Cell cell)
 		{
 			// Chơi với người
-			if (Mode == 1)
+			if (Mode == PlayingMode.Human)
 			{
-				if (cell.HadGone == Gone.X)
+				if (cell.Possessive == Possessive.X)
 					MessageBox.Show("Quân X thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				else
 					MessageBox.Show("Quân O thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				Media.PlayWinningSound();
 			}
 			// Chơi với máy
 			else
 			{
-				if (cell.HadGone == Gone.X)
+				if (cell.Possessive == Possessive.X)
 				{
 					MessageBox.Show("Máy thắng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					Media.PlayFailingSound();
@@ -918,65 +920,65 @@ namespace TicTacToe.Core
 			IsReady = false;
 		}
 
-		private bool RightTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool RightTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex > board.ColumnNumber - 5)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex, colIndex + i].HadGone != hadGone)
+				if (array[rowIndex, colIndex + i].Possessive != hadGone)
 					return false;
 			}
 			DrawWinningLine(graphics, colIndex * Cell.Width, rowIndex * Cell.Height + Cell.Height / 2, (colIndex + 5) * Cell.Width, rowIndex * Cell.Height + Cell.Height / 2);
 			return true;
 		}
 
-		private bool LeftTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool LeftTraversal_Horizontal(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (colIndex < 4)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex, colIndex - i].HadGone != hadGone)
+				if (array[rowIndex, colIndex - i].Possessive != hadGone)
 					return false;
 			}
 			DrawWinningLine(graphics, (colIndex + 1) * Cell.Width, rowIndex * Cell.Height + Cell.Height / 2, (colIndex - 4) * Cell.Width, rowIndex * Cell.Height + Cell.Height / 2);
 			return true;
 		}
 
-		private bool TopTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool TopTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex < 4 || colIndex < 4)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex - i, colIndex - i].HadGone != hadGone)
+				if (array[rowIndex - i, colIndex - i].Possessive != hadGone)
 					return false;
 			}
 			DrawWinningLine(graphics, colIndex * Cell.Width + Cell.Width / 2, rowIndex * Cell.Height, colIndex * Cell.Width + Cell.Width / 2, (rowIndex + 5) * Cell.Height);
 			return true;
 		}
 
-		private bool BottomTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool BottomTraversal_Vertical(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex > board.RowNumber - 5)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex + i, colIndex].HadGone != hadGone)
+				if (array[rowIndex + i, colIndex].Possessive != hadGone)
 					return false;
 			}
 			DrawWinningLine(graphics, colIndex * Cell.Width + Cell.Width / 2, rowIndex * Cell.Height, colIndex * Cell.Width + Cell.Width / 2, (rowIndex + 5) * Cell.Height);
 			return true;
 		}
 
-		private bool TopTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool TopTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex < 4 || colIndex < 4)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex - i, colIndex - i].HadGone != hadGone)
+				if (array[rowIndex - i, colIndex - i].Possessive != hadGone)
 				{
 					return false;
 				}
@@ -985,13 +987,13 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool BottomTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool BottomTraversal_PriDiagonal(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex > board.RowNumber - 5 || colIndex > board.ColumnNumber - 5)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex + i, colIndex + i].HadGone != hadGone)
+				if (array[rowIndex + i, colIndex + i].Possessive != hadGone)
 				{
 					return false;
 				}
@@ -1000,13 +1002,13 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool TopTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool TopTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex < 4 || colIndex > board.ColumnNumber - 5)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex - i, colIndex + i].HadGone != hadGone)
+				if (array[rowIndex - i, colIndex + i].Possessive != hadGone)
 				{
 					return false;
 				}
@@ -1015,13 +1017,13 @@ namespace TicTacToe.Core
 			return true;
 		}
 
-		private bool BottomTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, Gone hadGone)
+		private bool BottomTraversal_SecDiagonal(Graphics graphics, int rowIndex, int colIndex, Possessive hadGone)
 		{
 			if (rowIndex > board.RowNumber - 5 || colIndex < 4)
 				return false;
 			for (int i = 1; i <= 4; i++)
 			{
-				if (array[rowIndex + i, colIndex - i].HadGone != hadGone)
+				if (array[rowIndex + i, colIndex - i].Possessive != hadGone)
 				{
 					return false;
 				}
